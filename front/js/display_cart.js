@@ -2,8 +2,6 @@ const API_URL = "http://localhost:3000/api/products/";
 
 const getCart = () => JSON.parse(localStorage.getItem("cart"));
 
-console.log(getCart());
-
 const createItemBasis = (fetchedItem) => {
   const article = document.createElement("article");
   const imgWrapper = document.createElement("div");
@@ -14,14 +12,14 @@ const createItemBasis = (fetchedItem) => {
   const price = document.createElement("p");
 
   article.classList.add("cart__item");
-  article.dataset.id = fetchedItem.id;
+  article.dataset.id = fetchedItem._id;
   imgWrapper.classList.add("cart__item__img");
   img.src = fetchedItem.imageUrl;
   img.alt = fetchedItem.altText;
   contentWrapper.classList.add("cart__item__content");
   titlePriceWrapper.classList.add("cart__item__content__titlePrice");
   title.textContent = fetchedItem.name;
-  price.textContent = fetchedItem.price;
+  price.innerHTML = fetchedItem.price + " &euro;";
 
   titlePriceWrapper.append(title, price);
   imgWrapper.appendChild(img);
@@ -47,10 +45,11 @@ const createSettings = (item) => {
   quantityInput.classList.add("itemQuantity");
   quantityInput.name = "itemQuantity";
   quantityInput.min = "1";
-  quantityInput.amx = "100";
-  quantityInput.value = item.quantity;
+  quantityInput.max = "100";
+  quantityInput.setAttribute("value", item.quantity);
   deleteWrapper.classList.add("cart__item__content__settings__delete");
   deleteButton.classList.add("deleteItem");
+  deleteButton.textContent = "Supprimer";
 
   settingsQuantityWrapper.append(quantity, quantityInput);
   deleteWrapper.appendChild(deleteButton);
@@ -58,7 +57,9 @@ const createSettings = (item) => {
   return settingsWrapper;
 };
 
-const getCartUniqueIds = cart => Array.from(new Set(cart.map(item => item.id)));
+// Problème du SET : ne prend pas en compte les mêmes produits commandés dans plusieurs couleurs
+// const getCartUniqueIds = cart => Array.from(new Set(cart.map(item => item.id)));
+const getCartUniqueIds = cart => cart.map(item => item.id);
 
 const buildFetchUrls = cartUniqueIds => cartUniqueIds.map((item) => API_URL + item);
 
@@ -67,16 +68,14 @@ const cartUniqueIds = getCartUniqueIds(cart);
 const parentElem = document.getElementById("cart__items");
 const settings = cart.map((item) => createSettings(item));
 
-console.log(cartUniqueIds);
-
 buildFetchUrls(cartUniqueIds).map((url) => {
   fetch(url)
     .then((res) => res.json())
     .then((item) => {
-      console.log(item);
       const itemBasis = createItemBasis(item);
       const itemSettings = settings.shift();
-      itemBasis.appendChild(itemSettings);
+      const settingsParent = itemBasis.querySelector(".cart__item__content");
+      settingsParent.appendChild(itemSettings);
       parentElem.appendChild(itemBasis);
     })
     .catch((e) => console.error(e.message));

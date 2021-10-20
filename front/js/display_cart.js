@@ -36,6 +36,9 @@ const createSettings = (item) => {
   const deleteWrapper = document.createElement("div");
   const deleteButton = document.createElement("p");
 
+  // Rajout pour la couleur
+  const color = document.createElement("p");
+
   settingsWrapper.classList.add("cart__item__content__settings");
   settingsQuantityWrapper.classList.add(
     "cart__item__content__settings__quantity"
@@ -51,9 +54,13 @@ const createSettings = (item) => {
   deleteButton.classList.add("deleteItem");
   deleteButton.textContent = "Supprimer";
 
+  // Rajout pour la couleur
+  color.textContent = "Couleur : " + item.color;
+
   settingsQuantityWrapper.append(quantity, quantityInput);
   deleteWrapper.appendChild(deleteButton);
-  settingsWrapper.append(settingsQuantityWrapper, deleteWrapper);
+  // Rajout pour la couleur
+  settingsWrapper.append(color, settingsQuantityWrapper, deleteWrapper);
   return settingsWrapper;
 };
 

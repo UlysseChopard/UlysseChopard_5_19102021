@@ -25,7 +25,7 @@ const buildProductElem = product => {
 const displayAllItems = parentElem => {
     fetch(BASE_URL)
         .then(res => res.json())
-        .then(products => products.forEach(product => {
+        .then(products => products.map(product => {
             const newChild = buildProductElem(product);
             parentElem.appendChild(newChild);
         }))

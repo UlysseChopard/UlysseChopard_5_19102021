@@ -1,6 +1,6 @@
 const PRODUCT_API = "http://localhost:3000/api/products/";
 
-const url = new URL(document.location)
+const url = new URL(document.location);
 const id = url.searchParams.get("id");
 
 const fetchAdress = PRODUCT_API + id;

@@ -1,6 +1,5 @@
 const checkTextInput = field => {
     if (field.name.includes(/name/i)) {
-        console.log("passé par ici");
         return /^[a-z ,\.'-]+$/i.test(field.value);
     }
     return /[A-Za-z0-9'\.\-\s\,]+/.test(field.value);

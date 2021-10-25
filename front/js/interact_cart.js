@@ -53,6 +53,10 @@ const inputHandler = input => {
 const watchForInput = input => {
     input.addEventListener("change", () => {
         const newItem = inputHandler(input);
+        // Permet d'éviter une désynchronisation entre les valeurs du localStorage
+        // entre 0 et 100 et celle affichées et qui permettent de calculer le nombre d'items
+        // et le prix
+        input.value = newItem.quantity;
         propagateChangesToLocalStorage(newItem);
     });
 };

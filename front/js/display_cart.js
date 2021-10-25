@@ -60,7 +60,6 @@ const createSettings = (item) => {
 
   settingsQuantityWrapper.append(quantity, quantityInput);
   deleteWrapper.appendChild(deleteButton);
-
   // Rajout pour la couleur
   settingsWrapper.append(color, settingsQuantityWrapper, deleteWrapper);
   return settingsWrapper;

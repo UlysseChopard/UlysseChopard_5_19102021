@@ -1,10 +1,28 @@
-// Todo : retenir les valeurs calculées dans le localstorage
+// Todo : retenir les valeurs calculées dans le localstorage ou le sessionStorage
 // pour éviter leur disparition au rechargement
 
-const checkInput = inputValue => {
-    const value = parseInt(inputValue);
-    console.log(value);
-    return value > 0 && value <= 100 ? value : 0;
+const displayQuantityAlert = input => {
+    const alert = document.createElement("p");
+    alert.id = "alert__quantity";
+    alert.textContent = "Quantité entre 0 et 100";
+    input.parentNode.insertBefore(alert, input.nextSibling);
+}
+
+const removeQuantityAlert = input => {
+    const alert = input.parentNode.querySelector("#alert__quantity");
+    input.parentNode.removeChild(alert);
+};
+
+const checkQuantityInput = input => {
+    const value = parseInt(input.value);
+    const checkedInput = value >= 0 && value <= 100 ? value : null;
+    const prevAlert = input.parentNode.querySelector("#alert__quantity");
+    if (checkedInput === null && !prevAlert) {
+        displayQuantityAlert(input);
+    } else if (checkedInput && prevAlert) {
+        removeQuantityAlert(input);
+    }
+    return checkedInput ? checkedInput : 0;
 };
 
 const propagateChangesToLocalStorage = newItem => {
@@ -46,7 +64,7 @@ const inputHandler = input => {
     return {
         id: getProductId(input),
         color: getProductColor(input),
-        quantity: checkInput(input.value)
+        quantity: checkQuantityInput(input)
     };
 };
 
@@ -57,6 +75,7 @@ const watchForInput = input => {
         // entre 0 et 100 et celle affichées et qui permettent de calculer le nombre d'items
         // et le prix
         input.value = newItem.quantity;
+        // handleInvalidQuantityInput(input)
         propagateChangesToLocalStorage(newItem);
     });
 };

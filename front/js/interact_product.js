@@ -1,5 +1,18 @@
 const addBtn = document.getElementById("addToCart");
 
+const displayInputErrorMsg = (error) => {
+    const errorElem = document.createElement("p");
+    errorElem.id = "alert__input";
+    errorElem.textContent = error;
+    return addBtn.parentNode.appendChild(errorElem);
+};
+
+const removeInputErrorMsg = () => {
+    const parent = addBtn.parentNode;
+    const alerts = parent.querySelectorAll("#alert__input");
+    return alerts.map(alert => parent.removeChild(alert));
+};
+
 const getColor =  () => document.getElementById("colors").value;
 
 const getQuantity = () => {
@@ -31,16 +44,24 @@ const addToCart = () => {
     const color = getColor();
     const quantity = getQuantity();
 
-    console.log(id, color, quantity);
+    // TODO : bien gérer l'affichage des erreurs
 
     if (!id) {
+        displayInputErrorMsg("Le produit n'a pas été trouvé en base de données, veuillez réessayer plus tard");
         return;
     }
 
-    if (!quantity || !color) {
-        // TODO : Afficher un message à l'utilisateur pour le prévenir de l'absence de quantité ou de couleur
+    if (!quantity) {
+        displayInputErrorMsg("La quantité entrée est invalide. Veuillez entrer une quantité entre 0 et 100");
         return;
     }
+
+    if (!color) {
+        displayInputErrorMsg("Aucune couleur n'est sélectionnée. Veuillez choisir une couleur");
+        return;
+    }
+
+    removeInputErrorMsg();
 
     const item = {
         id,

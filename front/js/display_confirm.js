@@ -1,9 +1,9 @@
 const params = (new URL(document.location)).searchParams;
-const confirmId = parseInt(params.get("id")) || null;
+const confirmId = params.get("orderId") || null;
 
 
-const displayConfirmId = id => {
-    if (!id) {
+const displayConfirmId = orderId => {
+    if (!orderId) {
         throw new Error("Le numéro de confirmation n'est pas lisible");
     }
     const idElem = document.getElementById("orderId");

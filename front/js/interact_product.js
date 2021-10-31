@@ -10,7 +10,9 @@ const displayInputErrorMsg = (error) => {
 const removeInputErrorMsg = () => {
     const parent = addBtn.parentNode;
     const alerts = parent.querySelectorAll("#alert__input");
-    return alerts.map(alert => parent.removeChild(alert));
+    if (alerts.length) {
+        alerts.map(alert => parent.removeChild(alert));
+    }  
 };
 
 const getColor =  () => document.getElementById("colors").value;

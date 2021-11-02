@@ -64,7 +64,7 @@ const sendOrder = () => {
   const cartUniqueIds = Array.from(new Set(cart.map((item) => item.id)));
 
   const userInfo = {};
-  inputFields.map((field) => (userInfo[field.id] = field.value.toLowerCase()));
+  inputFields.map((field) => (userInfo[field.id] = field.value.trim().toLowerCase()));
 
   const order = JSON.stringify({
     contact: userInfo,
@@ -94,8 +94,6 @@ const sendOrder = () => {
     .catch((e) => console.error(e.message));
 };
 
-// Reprendre ici : éviter envoi par elem form
-// form.querySelector("#order").addEventListener("submit")
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   sendOrder();

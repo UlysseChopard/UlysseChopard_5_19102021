@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000/api/products/";
+const API_BASE_URL = "http://localhost:3000/api/products/";
 const PRODUCT_PAGE = "./product.html";
 
 const buildProductElem = product => {
@@ -23,7 +23,7 @@ const buildProductElem = product => {
 };
 
 const displayAllItems = parentElem => {
-    fetch(BASE_URL)
+    fetch(API_BASE_URL)
         .then(res => res.json())
         .then(products => products.map(product => {
             const newChild = buildProductElem(product);

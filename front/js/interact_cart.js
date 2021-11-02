@@ -1,5 +1,10 @@
+import { Cart } from "./utils/cart.js";
+
 // Todo : retenir les valeurs calculées dans le localstorage ou le sessionStorage
 // pour éviter leur disparition au rechargement
+
+const cart = new Cart();
+console.log("cart", cart);
 
 const displayQuantityAlert = input => {
     const alert = document.createElement("p");
@@ -25,15 +30,16 @@ const checkQuantityInput = input => {
     return checkedInput ? checkedInput : 0;
 };
 
-const propagateChangesToLocalStorage = newItem => {
-    const cart = getCart();
-    const previousElemIndex = cart.findIndex(item => item.id === newItem.id && item.color === newItem.color);
+// Cart
+const propagateChangesToLocalStorage = (cartInstance, newItem) => {
+    const cartContent = cartInstance.getCart();
+    const previousElemIndex = cartContent.findIndex(item => item.id === newItem.id && item.color === newItem.color);
     if (newItem.quantity < 0) {
-        cart.splice(previousElemIndex, 1);
+        cartContent.splice(previousElemIndex, 1);
     } else {
-        cart[previousElemIndex].quantity = newItem.quantity;
+        cartContent[previousElemIndex].quantity = newItem.quantity;
     }
-    localStorage.setItem("cart", JSON.stringify(cart));
+    cartInstance.setCart(cartContent);
 };
 
 const getItemWrapper = child => child.closest("article.cart__item");
@@ -55,7 +61,7 @@ const watchForSuppression = button => {
     button.addEventListener("click", () => {
         const deleteOrder = deleteButtonHandler(button);
         console.log(deleteOrder);
-        propagateChangesToLocalStorage(deleteOrder);
+        propagateChangesToLocalStorage(cart, deleteOrder);
         removeItem(button);
     });
 };

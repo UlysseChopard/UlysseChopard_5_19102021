@@ -1,6 +1,12 @@
-const API_URL = "http://localhost:3000/api/products/";
+import { Cart } from "./utils/cart.js";
 
-const getCart = () => JSON.parse(localStorage.getItem("cart"));
+const cart = new Cart();
+
+console.log(cart.getCart);
+
+const API_BASE_URL = "http://localhost:3000/api/products/";
+
+// const getCart = () => JSON.parse(localStorage.getItem("cart")) || [];
 
 const createItemBasis = (fetchedItem) => {
   const article = document.createElement("article");
@@ -79,13 +85,13 @@ const mergeCartAndAPI = (cartItem, fetchedInfos) => {
   return fetchedInfos;
 }
 
-const getCartIds = (cart) => cart.map((item) => item.id);
+const getCartIds = (cart) => cart.getCart.map((item) => item.id);
 
 const buildFetchUrls = (cartUniqueIds) =>
-  cartUniqueIds.map((item) => API_URL + item);
+  cartUniqueIds.map((item) => API_BASE_URL + item);
 
-const cart = getCart();
-const cartIds = getCartIds(cart);
+const cartContent = cart.getCart;
+const cartIds = getCartIds(cartContent);
 const parentElem = document.getElementById("cart__items");
 // const settings = cart.map((item) => createSettings(item));
 
@@ -111,7 +117,7 @@ fetchUrls.map((url) => {
     .then((res) => res.json())
     // Créer les articles
     .then((item) => {
-      const cartSpecifics = cart.shift();
+      const cartSpecifics = cartContent.shift();
       // Bricolage pour récupérer la couleur et pouvoir lui attribuer un dataset sur l'élément article
       // item.color = cartSpecifics.color;
       // item.quantity = cartSpecifics.quantity;

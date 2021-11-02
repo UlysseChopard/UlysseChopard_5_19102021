@@ -1,3 +1,7 @@
+import { Cart } from "./utils/cart.js";
+
+const cart = new Cart();
+
 const addBtn = document.getElementById("addToCart");
 
 const displayInputErrorMsg = (error) => {
@@ -9,7 +13,7 @@ const displayInputErrorMsg = (error) => {
 
 const removeInputErrorMsg = () => {
     const parent = addBtn.parentNode;
-    const alerts = parent.querySelectorAll("#alert__input");
+    const alerts = [...parent.querySelectorAll("#alert__input")];
     if (alerts.length) {
         alerts.map(alert => parent.removeChild(alert));
     }  
@@ -24,22 +28,32 @@ const getQuantity = () => {
 
 const getProductId = () => new URL(document.location).searchParams.get("id");
 
-const setLocalStorage = () => localStorage.getItem("cart") ? true : localStorage.setItem("cart", "[]");
+// const setLocalStorage = () => localStorage.getItem("cart") ? true : localStorage.setItem("cart", "[]");
 
-const getCart = () => {
-    return JSON.parse(localStorage.getItem("cart"));
-};
+// const getCart = () => {
+//     return JSON.parse(localStorage.getItem("cart"));
+// };
 
-const setCart = item => {
-    const cart = getCart();
-    const previouslyAdded = cart.findIndex(elem => elem.id === item.id && elem.color === item.color);
-    if (previouslyAdded !== -1) {
-        cart[previouslyAdded].quantity += item.quantity
-    } else {
-        cart.push(item);
-    }
-    return localStorage.setItem("cart", JSON.stringify(cart));
-};
+// const setCart = item => {
+//     const cart = getCart();
+//     const previouslyAdded = cart.findIndex(elem => elem.id === item.id && elem.color === item.color);
+//     if (previouslyAdded !== -1) {
+//         cart[previouslyAdded].quantity += item.quantity
+//     } else {
+//         cart.push(item);
+//     }
+//     return localStorage.setItem("cart", JSON.stringify(cart));
+// };
+
+// const updateCart = (newItem) => {
+//     const cart = new Cart();
+//     const prevItem = cart.getCart.find(item => item.id === newItem.id);
+//     if (prevItem) {
+//         cart.modifyItem(prevItem, newItem);
+//     } else {
+//         cart.addItem(item);
+//     }
+// };
 
 const addToCart = () => {
     const id = getProductId();
@@ -71,9 +85,9 @@ const addToCart = () => {
         quantity
     };
 
-    setCart(item);
+    cart.updateCart(item);
 };
 
-setLocalStorage();
+// setLocalStorage();
 
 addBtn.addEventListener("click", addToCart);

@@ -1,9 +1,9 @@
-const PRODUCT_API = "http://localhost:3000/api/products/";
+const API_BASE_URL = "http://localhost:3000/api/products/";
 
 const url = new URL(document.location);
 const id = url.searchParams.get("id");
 
-const fetchAdress = PRODUCT_API + id;
+const fetchAdress = API_BASE_URL + id;
 
 const buildProductElem = product => {
     const imgWrapper = document.querySelector("div.item__img");

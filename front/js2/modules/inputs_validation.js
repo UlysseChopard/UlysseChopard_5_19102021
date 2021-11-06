@@ -8,13 +8,15 @@ const checkSelectedOption = ({ value }) => (!!value);
 const checkText = ({ type, value }) => {
     switch(type) {
         case "email":
-            return /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$/.test(value);
-        case "name":
-            return /^[a-z ,\.'-]+$/i.test(value);
+            return /^[\w+.-]+@[a-z0-9.-]+.[a-z]$/i.test(value);
+        case "text":
+            return /^[\wéèàêâûùôï ,\.'-]+$/i.test(value);
     }
 };
 
 const checkInput = (inputType, obj) => {
+    console.log("inputType : ", inputType);
+    console.log("obj : ", obj);
     switch(inputType) {
         case "range":
             return checkNumberInRange(obj);

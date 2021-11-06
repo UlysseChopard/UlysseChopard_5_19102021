@@ -9,9 +9,8 @@ const displayInvalidInputMessage = (inputElem) => {
 
 const removeInvalidInputMessage = (inputElem) => {
   inputElem.classList.replace(":invalid", ":valid");
-  inputElem.parentNode.removeChild(
-    inputElem.parentNode.querySelector("p.invalidInput")
-  );
+  const invalidMsg = inputElem.parentNode.querySelector("p.invalidInput");
+  if (invalidMsg) inputElem.parentNode.removeChild(invalidMsg);
 };
 
 export { displayInvalidInputMessage, removeInvalidInputMessage };

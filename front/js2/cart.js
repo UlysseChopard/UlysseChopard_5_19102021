@@ -29,7 +29,7 @@ if (document.location.pathname.includes("/product.html")) {
 
 } else {
   displayCart();
-  
+
   const validateInputs = (inputs) => {
     inputs.map((input) =>
       input.addEventListener("change", () => {
@@ -40,7 +40,7 @@ if (document.location.pathname.includes("/product.html")) {
             valid = checkInput("range", { min: 1, max: 100, value: input.value });
             break;
           case "submit":
-            return sendOrder(document);
+            break;
           default:
             valid = checkInput("text", { type: type, value: input.value });
         }
@@ -54,5 +54,8 @@ if (document.location.pathname.includes("/product.html")) {
   };
 
   document.querySelector("form").addEventListener("submit", (e) => e.preventDefault());
-  validateInputs([...document.querySelectorAll("input.itemQuantity")]);
+  validateInputs([...document.querySelectorAll("input")]);
+
+  const submit = document.querySelector("input#order");
+  submit.addEventListener("click", () => sendOrder(document));
 }

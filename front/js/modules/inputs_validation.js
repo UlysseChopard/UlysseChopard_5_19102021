@@ -31,14 +31,19 @@ const checkInput = (inputType, obj) => {
 
 const validateInputs = (inputs) => {
     inputs.map((input) =>
-      input.addEventListener("change", () => {
+      input.addEventListener("change", (e) => {
+        console.log(e.target);
         let valid = false;
+        const input = e.target;
         const type = input.type;
         switch (type) {
+          case "submit":
+            break;
           case "number":
             valid = checkInput("range", { min: 1, max: 100, value: input.value });
-            break;
-          case "submit":
+            if (!valid) {
+              input.value = 0;
+            }
             break;
           default:
             valid = checkInput("text", { type: type, value: input.value });

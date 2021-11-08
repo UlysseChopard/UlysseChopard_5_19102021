@@ -19,6 +19,10 @@ const check = (cart, item) => {
 };
 
 const modify = (cart, item, index) => {
+    // Permet d'ajouter la quantité voulue à chaque clic sur la page product.html
+    if (document.location.pathname.includes("product.html")) {
+        item.quantity += cart[index].quantity;
+    }
     cart[index] = {...cart[index], ...item};
     return setCart(cart);
 };

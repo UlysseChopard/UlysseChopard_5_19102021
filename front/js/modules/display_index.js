@@ -1,4 +1,3 @@
-
 const createAnchor = product => {
     const anchor = document.createElement("a");
     anchor.href = "./product.html?id=" + product._id;

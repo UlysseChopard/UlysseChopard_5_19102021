@@ -46,14 +46,23 @@ const createTitlePrice = (item) => {
   return wrapper;
 };
 
-const updateQuantity = (e) => {
-  const newItem = getItemInfo(e.target);
-  if (newItem < 0) {
-    e.target.value = 0;
-    newItem.quantity = 0;
+const checkQuantity = (e) => {
+  e.target.checkValidity();
+  if (e.target.valid) {
+    const newItem = getItemInfo(e.target);
+    updateCart(newItem);
+    updatePrice(e);
+    return;
   }
-  updateCart(newItem);
-  updatePrice(e);
+  const validityState_Object = e.target.validity;
+  if (validityState_Object.missingValue) {
+    e.target.setCustomValidity("Quantité non renseignée");
+  } else if (validityState_Object.Underflow || validityState_Object.Overflow) {
+    e.target.setCustomValidity("La quantité doit être comprise entre 1 et 100");
+  } else {
+    e.target.setCustomValidity("");
+  }
+  return e.target.value = 0;
 }
 
 const createSettingsQuantity = (item) => {
@@ -70,7 +79,7 @@ const createSettingsQuantity = (item) => {
   input.max = 100;
   input.value = item.quantity;
 
-  input.addEventListener("change", updateQuantity)
+  input.addEventListener("change", checkQuantity)
 
   wrapper.append(quantity, input);
 
@@ -142,20 +151,21 @@ const updateTotals = () => {
   const totalPrice = document.querySelector("#totalPrice");
   const quantityInputs = [...document.querySelectorAll("input.itemQuantity")];
   const prices = [...document.querySelectorAll("div.cart__item__content__titlePrice > p")];
-  totalQuantity.textContent = quantityInputs.map(input => parseInt(input.value)).reduce((acc, val) => acc += val);
-  totalPrice.innerHTML = prices.map(price => parseInt(price.textContent)).reduce((acc, val) => acc += val);
+  totalQuantity.textContent = quantityInputs.map(input => parseInt(input.value)).reduce((acc, val) => acc += val, 0);
+  totalPrice.textContent = prices.map(price => parseInt(price.textContent)).reduce((acc, val) => acc += val, 0);
 };
-
-const cart = document.querySelector("section#cart__items");
-cart.addEventListener("change", updateTotals);
 
 const displayCart = () => updateCart().map(item => {
   fetch(`http://localhost:3000/api/products/${item.id}`)
     .then(res => res.json())
     .then(itemInfo => createArticle({...itemInfo, ...item}))
-    .then(cart => document.querySelector("section#cart__items").append(cart))
-    .then(updateTotals)
+    .then(cart => {
+      document.querySelector("section#cart__items").append(cart)
+      updateTotals();
+      const upToDateCart = document.querySelector("section#cart__items");
+      upToDateCart.addEventListener("change", updateTotals);
+    })
     .catch(console.error);
 });
 
-export default displayCart;
+export { displayCart };

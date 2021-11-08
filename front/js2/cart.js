@@ -1,5 +1,5 @@
 import updateCart from "./modules/local_storage.js";
-import checkInput from "./modules/inputs_validation.js";
+import { checkInput, validateInputs } from "./modules/inputs_validation.js";
 import { displayInvalidInputMessage, removeInvalidInputMessage } from "./modules/inputs_messages.js";
 import { sendOrder } from "./modules/send_order.js";
 import displayCart from "./modules/display_cart.js";
@@ -29,29 +29,6 @@ if (document.location.pathname.includes("/product.html")) {
 
 } else {
   displayCart();
-
-  const validateInputs = (inputs) => {
-    inputs.map((input) =>
-      input.addEventListener("change", () => {
-        let valid = false;
-        const type = input.type;
-        switch (type) {
-          case "number":
-            valid = checkInput("range", { min: 1, max: 100, value: input.value });
-            break;
-          case "submit":
-            break;
-          default:
-            valid = checkInput("text", { type: type, value: input.value });
-        }
-        if (!valid) {
-          displayInvalidInputMessage(input);
-        } else {
-          removeInvalidInputMessage(input);
-        }
-      })
-    );
-  };
 
   document.querySelector("form").addEventListener("submit", (e) => e.preventDefault());
   validateInputs([...document.querySelectorAll("input")]);

@@ -1,3 +1,5 @@
+import { displayInvalidInputMessage, removeInvalidInputMessage } from "./inputs_messages.js";
+
 const checkNumberInRange = ({min, max, value}) => {
     const parsedValue = parseInt(value);
     return (parsedValue && parsedValue >= min && parsedValue <= max);
@@ -27,4 +29,27 @@ const checkInput = (inputType, obj) => {
     }
 };
 
-export default checkInput;
+const validateInputs = (inputs) => {
+    inputs.map((input) =>
+      input.addEventListener("change", () => {
+        let valid = false;
+        const type = input.type;
+        switch (type) {
+          case "number":
+            valid = checkInput("range", { min: 1, max: 100, value: input.value });
+            break;
+          case "submit":
+            break;
+          default:
+            valid = checkInput("text", { type: type, value: input.value });
+        }
+        if (!valid) {
+          displayInvalidInputMessage(input);
+        } else {
+          removeInvalidInputMessage(input);
+        }
+      })
+    );
+  };
+
+export { checkInput, validateInputs };

@@ -1,4 +1,4 @@
-import {displayValidation } from "./modules/inputs_messages.js";
+import { displayValidation } from "./modules/inputs_messages.js";
 import copyToClipboard from "./modules/clipboard.js";
 
 const params = (new URL(document.location)).searchParams;

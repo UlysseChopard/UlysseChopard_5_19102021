@@ -1,5 +1,5 @@
-import displayValidation from "./utils/input_check.js";
-import copyToClipboard from "./utils/clipboard.js";
+import {displayValidation } from "./modules/inputs_messages.js";
+import copyToClipboard from "./modules/clipboard.js";
 
 const params = (new URL(document.location)).searchParams;
 const confirmId = params.get("orderId") || null;

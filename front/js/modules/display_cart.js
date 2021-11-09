@@ -48,21 +48,20 @@ const createTitlePrice = (item) => {
 
 const checkQuantity = (e) => {
   e.target.checkValidity();
-  if (e.target.valid) {
-    const newItem = getItemInfo(e.target);
-    updateCart(newItem);
-    updatePrice(e);
-    return;
-  }
   const validityState_Object = e.target.validity;
+  console.log(validityState_Object);
   if (validityState_Object.missingValue) {
     e.target.setCustomValidity("Quantité non renseignée");
-  } else if (validityState_Object.Underflow || validityState_Object.Overflow) {
+    e.target.value = "0";
+  } else if (validityState_Object.rangeUnderflow || validityState_Object.rangeOverflow) {
     e.target.setCustomValidity("La quantité doit être comprise entre 1 et 100");
+    e.target.value = "0";
   } else {
     e.target.setCustomValidity("");
   }
-  return e.target.value = 0;
+  const newItem = getItemInfo(e.target);
+  updateCart(newItem);
+  updatePrice(e);
 }
 
 const createSettingsQuantity = (item) => {
@@ -149,10 +148,12 @@ const createArticle = (item) => {
 const updateTotals = () => {
   const totalQuantity = document.querySelector("#totalQuantity");
   const totalPrice = document.querySelector("#totalPrice");
+
   const quantityInputs = [...document.querySelectorAll("input.itemQuantity")];
   const prices = [...document.querySelectorAll("div.cart__item__content__titlePrice > p")];
-  totalQuantity.textContent = quantityInputs.map(input => parseInt(input.value)).reduce((acc, val) => acc += val, 0);
-  totalPrice.textContent = prices.map(price => parseInt(price.textContent)).reduce((acc, val) => acc += val, 0);
+ 
+  totalQuantity.textContent = quantityInputs.map(input => parseInt(input.value)).reduce((acc, val) => acc += val, 0) || 0;
+  totalPrice.textContent = prices.map(price => parseInt(price.textContent)).reduce((acc, val) => acc += val, 0) || 0;
 };
 
 const displayCart = () => updateCart().map(item => {
@@ -168,4 +169,4 @@ const displayCart = () => updateCart().map(item => {
     .catch(console.error);
 });
 
-export { displayCart };
+export { displayCart, updateTotals };

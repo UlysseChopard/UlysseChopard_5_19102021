@@ -1,8 +1,9 @@
-import { displayInvalidInputMessage, removeInvalidInputMessage } from "./inputs_messages.js";
+// import { displayInvalidInputMessage, removeInvalidInputMessage } from "./inputs_messages.js";
 
 const checkNumberInRange = ({min, max, value}) => {
     const parsedValue = parseInt(value);
-    return (parsedValue && parsedValue >= min && parsedValue <= max);
+    console.log("parsedValue", parsedValue);
+    return (parsedValue && parsedValue > min && parsedValue <= max);
 }
 
 const checkSelectedOption = ({ value }) => (!!value);
@@ -41,17 +42,20 @@ const validateInputs = (inputs) => {
             break;
           case "number":
             valid = checkInput("range", { min: 1, max: 100, value: input.value });
-            if (!valid) {
-              input.value = 0;
-            }
+            // if (!valid) {
+            //   input.value = 0;
+            // }
             break;
           default:
             valid = checkInput("text", { type: type, value: input.value });
         }
+        // if (!valid) {
+        //   displayInvalidInputMessage(input);
+        // } else {
+        //   removeInvalidInputMessage(input);
+        // }
         if (!valid) {
-          displayInvalidInputMessage(input);
-        } else {
-          removeInvalidInputMessage(input);
+          input.setCustomValidity("Champ obligatoire");
         }
       })
     );

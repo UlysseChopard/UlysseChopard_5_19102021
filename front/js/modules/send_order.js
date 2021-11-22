@@ -21,15 +21,17 @@ const createOrder = (workingDocument) => {
     if (checkedValues.includes(false)) return false;
     const userInfo = {};
     checkedValues.map(input => userInfo[input.id] =  input.value.trim().toLowerCase());
-    const cartUniqueIds = [...new Set([...updateCart()].map(item => item.id))];
+    const cartUniqueIds = [...new Set([...updateCart()].filter(item => item.quantity).map(item => item.id))];
+    console.log("cartIds", cartUniqueIds);
+    if (!cartUniqueIds.length) return false;
     return JSON.stringify({
         contact: userInfo,
         products: cartUniqueIds
     });
 };
 
-const displayInvalidOrder = (btn) => {
-    btn.value = "Erreur dans la commande";
+const displayInvalidOrder = (btn, errMsg) => {
+    btn.value = errMsg || "Erreur dans la commande";
     btn.style.backgroundColor = "red";
     return btn;
 };
@@ -40,9 +42,9 @@ const resetOrderBtnStyle = (btn) => {
     return btn;
 };
 
-const displayErrorMsg = () => {
+const displayErrorMsg = (errMsg) => {
     const orderBtn = document.getElementById("order");
-    displayInvalidOrder(orderBtn);
+    displayInvalidOrder(orderBtn, errMsg);
     setTimeout(resetOrderBtnStyle, 1000, orderBtn);
 };
 
@@ -52,7 +54,7 @@ const sendOrder = (workingDocument) => {
     const order = createOrder(workingDocument);
     const errorMsg = "Invalid input";
     if (!order) {
-        displayErrorMsg();
+        displayErrorMsg("Les informations entrées ne sont pas suffisantes pour passer la commande");
         return false;
     }
     return fetch(postAdress, {
@@ -65,11 +67,11 @@ const sendOrder = (workingDocument) => {
         if (!res.ok) throw new Error(errorMsg);
         return res.json();
     })
-      .then((res) => workingDocument.location = "/front/html/confirmation.html?orderId=" + res.orderId)
+      .then((res) => workingDocument.location.assign("/front/html/confirmation.html?orderId=" + res.orderId))
       .catch(e => {
           console.error(e);
           if (e.message === errorMsg) {
-              displayErrorMsg();
+              displayErrorMsg(e.message);
           }
       });
 };

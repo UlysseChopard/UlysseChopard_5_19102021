@@ -90,12 +90,25 @@ const createSettingsColor = (item) => {
   return wrapper;
 };
 
+const displaySuccessOnDelete = (parentElem) => {
+  const para = document.createElement("p");
+  para.textContent = "Article supprimé !";
+  parentElem.appendChild(para);
+  const removePara = () => parentElem.removeChild(para);
+  setTimeout(removePara, 3000)
+};
+
 const deleteItem = (e) => {
   const article = e.target.closest("article");
+  article.querySelector("input.itemQuantity").value = 0;
+  article.dispatchEvent(new Event("change", { bubbles: true }));
   const item = getItemInfo(e.target);
   item.quantity = -1;
   updateCart(item);
-  document.querySelector("section#cart__items").removeChild(article);
+  const section = document.querySelector("section#cart__items"); 
+  displaySuccessOnDelete(article.parentNode);
+  section.removeChild(article);
+  // location.reload();
 }
 
 const createSettingsDelete = () => {
@@ -139,28 +152,39 @@ const createArticle = (item) => {
   return article;
 };
 
-const updateTotals = () => {
+const updateTotalQuantity = () => {
   const totalQuantity = document.querySelector("#totalQuantity");
-  const totalPrice = document.querySelector("#totalPrice");
-
   const quantityInputs = [...document.querySelectorAll("input.itemQuantity")];
-  const prices = [...document.querySelectorAll("div.cart__item__content__titlePrice > p")];
- 
   totalQuantity.textContent = quantityInputs.map(input => parseInt(input.value)).reduce((acc, val) => acc += val, 0) || 0;
+}
+
+const updateTotalPrice = () => {
+  const totalPrice = document.querySelector("#totalPrice");
+  const prices = [...document.querySelectorAll("div.cart__item__content__titlePrice > p")];
   totalPrice.textContent = prices.map(price => parseInt(price.textContent)).reduce((acc, val) => acc += val, 0) || 0;
+}
+
+const updateTotals = () => {
+  updateTotalPrice();
+  updateTotalQuantity();
 };
 
-const displayCart = () => updateCart().map(item => {
-  fetch(`http://localhost:3000/api/products/${item.id}`)
+const displayItem = item => {
+  return fetch(`http://localhost:3000/api/products/${item.id}`)
     .then(res => res.json())
     .then(itemInfo => createArticle({...itemInfo, ...item}))
-    .then(cart => {
-      document.querySelector("section#cart__items").append(cart)
-      updateTotals();
-      const upToDateCart = document.querySelector("section#cart__items");
-      upToDateCart.addEventListener("change", updateTotals);
-    })
+    .then(cart => document.querySelector("section#cart__items").appendChild(cart))
     .catch(console.error);
-});
+};
 
-export { displayCart, updateTotals };
+const displayCart = () => Promise.all(updateCart().map(item => displayItem(item)));
+
+const displayCartAndTotals = () => {
+  return displayCart()
+    .then(updateTotals)
+    .then(() => document.querySelector("section#cart__items").addEventListener("change", updateTotals))
+    .catch(console.error);
+};
+
+
+export { displayCartAndTotals, updateTotals };

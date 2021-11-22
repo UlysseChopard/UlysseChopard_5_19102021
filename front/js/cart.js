@@ -3,6 +3,7 @@ import { checkInput, validateInputs } from "./modules/inputs_validation.js";
 import sendOrder from "./modules/send_order.js";
 import { displayValidation } from "./modules/inputs_messages.js";
 import { updateTotals } from "./modules/display_cart.js";
+import displayShortcutButtons from "./modules/dynamic_buttons.js";
 
 if (document.location.pathname.includes("/product.html")) {
   const checkQuantity = e => {
@@ -14,8 +15,7 @@ if (document.location.pathname.includes("/product.html")) {
     }
   };
 
-  const input = document.querySelector("input#quantity");
-  input.addEventListener("change", checkQuantity);
+  document.querySelector("input#quantity").addEventListener("change", checkQuantity);
 
   const resetAddBtnStyle = btn => {
     btn.textContent = "Ajouter au panier";
@@ -24,18 +24,22 @@ if (document.location.pathname.includes("/product.html")) {
   };
 
   const addToCart = (e) => {
+    const btn = e.target;
     const id = new URL(document.location).searchParams.get("id");
     const color = document.querySelector("select#colors").value;
     const quantity = parseInt(document.querySelector("input#quantity").value);
+
+    if (!checkInput("option", { value: color })) {
+      btn.textContent = "Une couleur doit être sélectionnée";
+      displayValidation(btn, false);
+      return;
+    }
     
-    if (
-      !checkInput("range", { min: 1, max: 100, value: quantity }) ||
-      !checkInput("option", { value: color })
-      ) {
-        e.target.textContent = "La couleur et la quantité doivent être renseignés";
-        displayValidation(e.target, false);
+    if (!checkInput("range", { min: 1, max: 100, value: quantity })) {
+        btn.textContent = "La quantité doit être un nombre compris entre 1 et 100";
+        displayValidation(btn, false);
         return;
-      }
+    }
       
       const item = {
         id,
@@ -45,8 +49,9 @@ if (document.location.pathname.includes("/product.html")) {
 
       updateCart(item);
 
-      e.target.textContent = "Ajouté au panier !"
-      displayValidation(e.target, true);
+      btn.textContent = "Ajouté au panier !"
+      displayValidation(btn, true);
+      displayShortcutButtons(btn.parentNode);
     };
     
     const addBtn = document.querySelector("button#addToCart");
@@ -56,14 +61,13 @@ if (document.location.pathname.includes("/product.html")) {
   } else {
 
   import("./modules/display_cart.js")
-    .then(module => module.displayCart())
+    .then(module => module.displayCartAndTotals())
     .then(() => {
-      updateTotals();
-      document.querySelector("form").addEventListener("submit", (e) => e.preventDefault());
       validateInputs([...document.querySelectorAll("input")]);
       
-      const submit = document.querySelector("input#order");
-      submit.addEventListener("click", () => sendOrder(document));
+      // document.querySelector("section#cart__items").addEventListener("change", updateTotals);
+      document.querySelector("form").addEventListener("submit", (e) => e.preventDefault());
+      document.querySelector("input#order").addEventListener("click", () => sendOrder(document));
     })
     .catch(console.error);
 

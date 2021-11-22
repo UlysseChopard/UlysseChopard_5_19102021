@@ -1,17 +1,26 @@
-const displayInvalidInputMessage = (inputElem) => {
-  if (inputElem.parentNode.querySelector("p.invalidInput")) return;
-  inputElem.classList.add(":invalid");
-  const para = document.createElement("p");
-  para.classList = "invalidInput";
-  para.textContent = "Champ obligatoire";
-  inputElem.parentNode.appendChild(para);
+// const displayInvalidInputMessage = (inputElem) => {
+//   if (inputElem.parentNode.querySelector("p.invalidInput")) return;
+//   inputElem.classList.add(":invalid");
+//   const para = document.createElement("p");
+//   para.classList = "invalidInput";
+//   para.textContent = "Champ obligatoire";
+//   inputElem.parentNode.appendChild(para);
+// };
+
+// const removeInvalidInputMessage = (inputElem) => {
+//   inputElem.classList.replace(":invalid", ":valid");
+//   const invalidMsg = inputElem.parentNode.querySelector("p.invalidInput");
+//   if (invalidMsg) inputElem.parentNode.removeChild(invalidMsg);
+// };
+const removeErrorMsg = p => {
+  p.textContent = "";
 };
 
-const removeInvalidInputMessage = (inputElem) => {
-  inputElem.classList.replace(":invalid", ":valid");
-  const invalidMsg = inputElem.parentNode.querySelector("p.invalidInput");
-  if (invalidMsg) inputElem.parentNode.removeChild(invalidMsg);
-};
+const displayErrorMessage = (msg, elem) => {
+  const para = elem.parentNode.querySelector(`p#${elem.id}ErrorMsg`) || elem.parentNode.appendChild(document.createElement("p"));
+  para.textContent = msg;
+  setTimeout(removeErrorMsg, 2000, para);
+}
 
 const displaySuccess = elem => {
   elem.style.backgroundColor = "green";
@@ -27,4 +36,4 @@ const displayFailure = elem => {
 
 const displayValidation = (elem, success) => success ? displaySuccess(elem) : displayFailure(elem);
 
-export { displayInvalidInputMessage, removeInvalidInputMessage, displayValidation };
+export { displayValidation, displayErrorMessage };

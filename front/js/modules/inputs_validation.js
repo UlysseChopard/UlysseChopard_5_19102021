@@ -1,4 +1,4 @@
-// import { displayInvalidInputMessage, removeInvalidInputMessage } from "./inputs_messages.js";
+import { displayErrorMessage } from "./inputs_messages.js";
 
 const checkNumberInRange = ({min, max, value}) => {
     const parsedValue = parseInt(value);
@@ -9,6 +9,7 @@ const checkNumberInRange = ({min, max, value}) => {
 const checkSelectedOption = ({ value }) => (!!value);
 
 const checkText = ({ type, value }) => {
+  console.log(type, value);
     switch(type) {
         case "email":
             return /^[\w+.-]+@[a-z0-9.-]+\.[a-z]+$/i.test(value);
@@ -30,27 +31,34 @@ const checkInput = (inputType, obj) => {
     }
 };
 
-const validateInputs = (inputs) => {
-    inputs.map((input) =>
-      input.addEventListener("change", (e) => {
-        console.log(e.target);
-        let valid = false;
-        const input = e.target;
-        const type = input.type;
-        switch (type) {
-          case "submit":
-            break;
-          case "number":
-            valid = checkInput("range", { min: 1, max: 100, value: input.value });
-            break;
-          default:
-            valid = checkInput("text", { type: type, value: input.value });
-        }
-        if (!valid) {
-          input.setCustomValidity("Champ obligatoire");
-        }
-      })
-    );
-  };
+const deeperChecks = inputElem => {
+  const type = inputElem.type;
+  console.log(type);
+  let valid = false;
+  if (type === "number") {
+    valid = checkInput("range", { min: 1, max: 100, value: inputElem.value });
+    if (!valid) {
+      displayErrorMessage("La valeur doit être un nombre entre 1 et 100", inputElem);
+    }
+    return;
+  }
+  valid = checkInput("text", { type: type, value: inputElem.value });
+  if (!valid) {
+    displayErrorMessage("La valeur entrée ne correspond pas une valeur correcte pour ce champ", inputElem);
+  }
+}
+
+const validateInput = e => {
+  console.log(e);
+  if (e.target.validity.valid) return deeperChecks(e.target);
+  const validityState = e.target.validity;
+  if (validityState.valueMissing) displayErrorMessage("Une valeur doit être entrée", e.target);
+  else if (validityState.typeMismatch || validityState.patternMismatch) displayErrorMessage("La valeur entrée ne correspond pas au type de valeur attendu", e.target);
+  else if (validityState.rangeUnderflow) displayErrorMessage("La valeur entrée est inférieure à 1 ce qui est impossible", e.target);
+  else if (validityState.rangeOverflow) displayErrorMessage("La valeur entrée est supérieure à 100 ce qui est impossible", e.target);
+  else displayErrorMessage("Erreur dans ce champ", e.target);
+}
+
+const validateInputs = inputs => inputs.forEach(input => input.addEventListener("change", validateInput))
 
 export { checkInput, validateInputs };

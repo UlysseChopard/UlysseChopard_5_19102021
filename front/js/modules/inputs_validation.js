@@ -3,7 +3,7 @@
 const checkNumberInRange = ({min, max, value}) => {
     const parsedValue = parseInt(value);
     console.log("parsedValue", parsedValue);
-    return (parsedValue && parsedValue > min && parsedValue <= max);
+    return (parsedValue && parsedValue >= min && parsedValue <= max);
 }
 
 const checkSelectedOption = ({ value }) => (!!value);
@@ -11,7 +11,7 @@ const checkSelectedOption = ({ value }) => (!!value);
 const checkText = ({ type, value }) => {
     switch(type) {
         case "email":
-            return /^[\w+.-]+@[a-z0-9.-]+.[a-z]$/i.test(value);
+            return /^[\w+.-]+@[a-z0-9.-]+\.[a-z]+$/i.test(value);
         case "text":
             return /^[\wéèàêâûùôï ,\.'-]+$/i.test(value);
     }
@@ -42,18 +42,10 @@ const validateInputs = (inputs) => {
             break;
           case "number":
             valid = checkInput("range", { min: 1, max: 100, value: input.value });
-            // if (!valid) {
-            //   input.value = 0;
-            // }
             break;
           default:
             valid = checkInput("text", { type: type, value: input.value });
         }
-        // if (!valid) {
-        //   displayInvalidInputMessage(input);
-        // } else {
-        //   removeInvalidInputMessage(input);
-        // }
         if (!valid) {
           input.setCustomValidity("Champ obligatoire");
         }

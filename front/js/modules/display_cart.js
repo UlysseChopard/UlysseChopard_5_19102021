@@ -50,14 +50,8 @@ const checkQuantity = (e) => {
   e.target.checkValidity();
   const validityState_Object = e.target.validity;
   console.log(validityState_Object);
-  if (validityState_Object.missingValue) {
-    e.target.setCustomValidity("Quantité non renseignée");
-    e.target.value = "0";
-  } else if (validityState_Object.rangeUnderflow || validityState_Object.rangeOverflow) {
-    e.target.setCustomValidity("La quantité doit être comprise entre 1 et 100");
-    e.target.value = "0";
-  } else {
-    e.target.setCustomValidity("");
+  if (!validityState_Object.valid) {
+    e.target.value = 0;
   }
   const newItem = getItemInfo(e.target);
   updateCart(newItem);

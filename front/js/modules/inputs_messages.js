@@ -17,7 +17,8 @@ const removeErrorMsg = p => {
 };
 
 const displayErrorMessage = (msg, elem) => {
-  const para = elem.parentNode.querySelector(`p#${elem.id}ErrorMsg`) || elem.parentNode.appendChild(document.createElement("p"));
+  const para = elem.parentNode.querySelector(`p#${elem.id}ErrorMsg`);
+  if (!para) return;
   para.textContent = msg;
   setTimeout(removeErrorMsg, 2000, para);
 }

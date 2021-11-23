@@ -100,15 +100,20 @@ const displaySuccessOnDelete = (parentElem) => {
 
 const deleteItem = (e) => {
   const article = e.target.closest("article");
+
+  // Propage le changement au total
   article.querySelector("input.itemQuantity").value = 0;
+  article.querySelector("div.cart__item__content__titlePrice > p").textContent = "0";
   article.dispatchEvent(new Event("change", { bubbles: true }));
+
+  // Propage au localStorage
   const item = getItemInfo(e.target);
   item.quantity = -1;
   updateCart(item);
-  const section = document.querySelector("section#cart__items"); 
+
+  // Visuel
   displaySuccessOnDelete(article.parentNode);
-  section.removeChild(article);
-  // location.reload();
+  document.querySelector("section#cart__items").removeChild(article);
 }
 
 const createSettingsDelete = () => {
